@@ -23,6 +23,19 @@ def validate_data(matrix: np.matrix, rhs: np.ndarray) -> tuple[bool, str]:
     return True, ""
 
 
+def solve_system(matrix: np.matrix, rhs: np.ndarray) -> np.ndarray:
+    matrix = np.concatenate((matrix, rhs.reshape(-1, 1)), axis=1)
+    rows, _ = matrix.shape
+    for row in range(rows):
+        for col in range(rows):
+            if row != col:
+                k = matrix[col, row] / matrix[row, row]
+                matrix[col] = matrix[col] - k * matrix[row]
+    for i in range(rows):
+        matrix[i, -1] /= matrix[i, i]
+    return matrix[:, -1].flatten()
+
+
 def main():
     matrix_path = Path("data", "system.json")
     if not matrix_path.exists():
@@ -32,6 +45,8 @@ def main():
     is_valid, validation_message = validate_data(matrix, rhs)
     if not is_valid:
         print(validation_message)
+    print(solve_system(matrix, rhs))
+    print(np.linalg.solve(matrix, rhs))
 
 
 if __name__ == "__main__":
