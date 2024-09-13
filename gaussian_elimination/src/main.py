@@ -1,4 +1,5 @@
 import json
+from itertools import product
 from pathlib import Path
 
 import numpy as np
@@ -26,6 +27,9 @@ def solve_system(matrix: np.ndarray, rhs: np.ndarray) -> np.ndarray:
     validate_data(matrix, rhs)
     matrix = np.concatenate((matrix, rhs.reshape(-1, 1)), axis=1)
     rows, _ = matrix.shape
+    for row, col in product(range(rows), range(rows)):
+        if row != col and matrix[row, row] == 0:
+            matrix[row] += matrix[col]
 
     for row in range(rows):
         for col in range(rows):
