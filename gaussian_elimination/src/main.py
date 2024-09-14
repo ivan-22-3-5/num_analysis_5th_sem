@@ -13,6 +13,8 @@ def read_equations(filename: Path) -> tuple[np.ndarray, np.ndarray]:
 
 def validate_data(matrix: np.ndarray, rhs: np.ndarray):
     rows, cols = matrix.shape
+    if matrix.ndim != 2:
+        raise np.linalg.LinAlgError("The array is not two dimensional!")
     if rows != cols:
         raise np.linalg.LinAlgError("The matrix is not square!")
     if np.linalg.det(matrix) == 0:
@@ -27,15 +29,14 @@ def solve_system(matrix: np.ndarray, rhs: np.ndarray) -> np.ndarray:
     validate_data(matrix, rhs)
     matrix = np.concatenate((matrix, rhs.reshape(-1, 1)), axis=1)
     rows, _ = matrix.shape
-    for row, col in product(range(rows), range(rows)):
-        if row != col and matrix[row, row] == 0:
-            matrix[row] += matrix[col]
+    for col, row in product(range(rows), range(rows)):
+        if col != row and matrix[col, col] == 0:
+            matrix[col] += matrix[row]
 
-    for row in range(rows):
-        for col in range(rows):
-            if row != col:
-                k = matrix[col, row] / matrix[row, row]
-                matrix[col] = matrix[col] - k * matrix[row]
+    for col, row in product(range(rows), range(rows)):
+        if col != row:
+            k = matrix[row, col] / matrix[col, col]
+            matrix[row] = matrix[row] - k * matrix[col]
     matrix[:, -1] /= matrix.diagonal()
 
     return matrix[:, -1]
@@ -47,6 +48,7 @@ def main():
         print("File with the matrix does not exist!")
         return
     matrix, rhs = read_equations(matrix_path)
+
     print(solve_system(matrix, rhs))
     print(np.linalg.solve(matrix, rhs))
 
