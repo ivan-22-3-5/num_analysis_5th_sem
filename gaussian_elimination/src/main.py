@@ -28,12 +28,12 @@ def validate_data(matrix: np.ndarray, rhs: np.ndarray):
 def solve_system(matrix: np.ndarray, rhs: np.ndarray) -> np.ndarray:
     validate_data(matrix, rhs)
     matrix = np.concatenate((matrix, rhs.reshape(-1, 1)), axis=1)
-    rows, _ = matrix.shape
-    for col, row in product(range(rows), range(rows)):
+    order, _ = matrix.shape
+    for col, row in product(range(order), range(order)):
         if col != row and matrix[col, col] == 0:
             matrix[col] += matrix[row]
 
-    for col, row in product(range(rows), range(rows)):
+    for col, row in product(range(order), range(order)):
         if col != row:
             k = matrix[row, col] / matrix[col, col]
             matrix[row] = matrix[row] - k * matrix[col]
