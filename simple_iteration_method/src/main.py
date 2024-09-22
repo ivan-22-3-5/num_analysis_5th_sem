@@ -27,8 +27,19 @@ def validate_data(matrix: np.ndarray, rhs: np.ndarray):
             raise np.linalg.LinAlgError(f"One of the diagonal elements is greater than sum of the other elements in the row!")
 
 
-def solve_system(matrix: np.ndarray, rhs: np.ndarray, start_vector: np.ndarray, precision: float = 1e-6):
+def solve_system(matrix: np.ndarray, rhs: np.ndarray,
+                 start_vector: np.ndarray, precision_range: tuple[float, float] = (1e-6, 2e-6)) -> np.ndarray:
     validate_data(matrix, rhs)
+    order, _ = matrix.shape
+
+    previous_x_vector = start_vector
+    while True:
+        x_vector = np.array([rhs[i] - sum(matrix[i] * previous_x_vector) + matrix[i, i] * previous_x_vector[i]
+                             for i in range(order)]) / matrix.diagonal()
+        if precision_range[0] < np.max(np.abs(x_vector-previous_x_vector)) < precision_range[1]:
+            break
+        previous_x_vector = x_vector
+    return x_vector
 
 
 def main():
@@ -38,7 +49,7 @@ def main():
         return
     matrix, rhs = read_equations(matrix_path)
 
-    print(solve_system(matrix, rhs))
+    print(solve_system(matrix, rhs, start_vector=np.array([21, 1, 2, 0.5]), precision_range=(17e-6, 50e-6)))
     print(np.linalg.solve(matrix, rhs))
 
 
