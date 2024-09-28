@@ -31,14 +31,16 @@ def bisection(interval: tuple[float, float],
         raise ValueError("Invalid interval")
     start, end = interval
     i = 0
-    mid = mid_func(start, end, i)
-    while abs(start - mid) >= 2 * precision:
+    while True:
+        mid = mid_func(start, end, i)
+        if abs(start - mid) <= 2 * precision:
+            break
+
         if func(start) * func(mid) > 0:
             start = mid
         else:
             end = mid
         i += 1
-        mid = mid_func(start, end, i)
     return mid
 
 
