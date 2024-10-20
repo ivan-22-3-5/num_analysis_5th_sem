@@ -1,6 +1,9 @@
 import json
 from dataclasses import dataclass
 
+import numpy as np
+import sympy as sp
+
 
 @dataclass(frozen=True)
 class Point:
@@ -17,23 +20,27 @@ def calculate_distance(point1: Point, point2: Point) -> float:
     return ((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2) ** 0.5
 
 
-def calculate_sums(points: list[Point]):
-    sums = {
-        'sum_x_power_two': sum(map(lambda point: point.x ** 2, points)),
-        'sum_x_power_three': sum(map(lambda point: point.x ** 3, points)),
-        'sum_x_power_four': sum(map(lambda point: point.x ** 4, points)),
-        'sum_x_power_five': sum(map(lambda point: point.x ** 5, points)),
-        'sum_x_power_six': sum(map(lambda point: point.x ** 6, points)),
-        'sum_xy': sum(map(lambda point: point.x * point.y, points)),
-        'sum_x_power_two_y': sum(map(lambda point: point.x ** 2 * point.y, points)),
-        'sum_x_power_three_y': sum(map(lambda point: point.x ** 3 * point.y, points)),
-    }
-    return sums
+def build_polynomial(points: list[Point], degree: int = 1):
+    if not 1 <= degree <= 10:
+        raise ValueError('Polynomial degree must be >= 1 and <= 10')
+    lhs = np.array([
+        [
+            sum(map(lambda point: point.x ** p, points)) for p in range(degree + d, -1 + d, -1)
+        ] for d in range(0, degree + 1)
+    ])
+    rhs = np.array([sum(map(lambda point: point.x ** p * point.y, points)) for p in range(degree + 1)])
+    coefficients = np.linalg.solve(lhs, rhs)
+    return sum(coefficients[-(p + 1)] * sp.Symbol('x') ** p for p in range(degree, -1, -1))
 
 
 def main():
-    points = read_points()
-    print(calculate_sums(points))
+    print(build_polynomial([
+        Point(-4, -2),
+        Point(-3, 0),
+        Point(-2, 1),
+        Point(-1, -1),
+        Point(0, -3),
+    ], degree=3))
 
 
 if __name__ == '__main__':
