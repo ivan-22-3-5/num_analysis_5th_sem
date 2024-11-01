@@ -27,10 +27,14 @@ def rectangular_integration(func: Callable[[float], float], a: float, b: float, 
     return integral * h
 
 
+def f(x: float) -> float:
+    return (x ** 2 - 1.3) / (1.2 * x ** 3 + 1)
+
+
 def main():
-    print(f"{rectangular_integration(lambda x: 4 - x ** 2, 0, 2, 1000)=}")
-    print(f"{trapezoidal_integration(lambda x: 4 - x ** 2, 0, 2, 1000)=}")
-    print(f"{simpson_integration(lambda x: 4 - x ** 2, 0, 2, 1000)=}")
+    print(f"{rectangular_integration(f, 2, 4.4, 10000)=}")
+    print(f"{trapezoidal_integration(f, 2, 4.4, 10000)=}")
+    print(f"{simpson_integration(f, 2, 4.4, 10000)=}")
 
 
 if __name__ == '__main__':
