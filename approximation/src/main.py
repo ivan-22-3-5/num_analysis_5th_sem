@@ -50,13 +50,9 @@ def find_best_fit(points: list[Point], max_degree: int = 5):
 
 
 def main():
-    print(find_best_fit([
-        Point(-4, -2),
-        Point(-3, 0),
-        Point(-2, 1),
-        Point(-1, -1),
-        Point(0, -3),
-    ], max_degree=3))
+    pol, err = find_best_fit(read_points(), max_degree=4)
+    print(f"Polynomial: {pol.evalf(3)}\n"
+          f"Error: {err}")
 
 
 if __name__ == '__main__':
