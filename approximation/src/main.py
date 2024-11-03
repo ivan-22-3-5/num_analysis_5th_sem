@@ -1,6 +1,7 @@
 import json
 from dataclasses import dataclass
 
+import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sp
 
@@ -47,6 +48,33 @@ def find_best_fit(points: list[Point], max_degree: int = 5):
             best_polynomial = polynomial
 
     return best_polynomial, best_error
+
+
+def plot_polynomial(points: list[Point], degree: int = 1):
+    polynomial = build_polynomial(points, degree)
+
+    x_vals = np.linspace(min(point.x for point in points) - 1,
+                         max(point.x for point in points) + 1,
+                         100)
+
+    y_vals = [polynomial.evalf(subs={sp.Symbol('x'): x}) for x in x_vals]
+
+    x_points = [point.x for point in points]
+    y_points = [point.y for point in points]
+
+    fig = plt.figure(figsize=(10, 6))
+    fig.patch.set_facecolor('#DAD5D1')
+
+    plt.plot(x_vals, y_vals, label=f'Polynomial Degree {degree}', color='blue')
+    plt.scatter(x_points, y_points, color='red', zorder=5, label='Data Points')
+    plt.title(f'Polynomial Fit of Degree {degree}')
+    plt.xlabel('X-axis')
+    plt.ylabel('Y-axis')
+    plt.axhline(0, color='black', linewidth=0.5, ls='--')
+    plt.axvline(0, color='black', linewidth=0.5, ls='--')
+    plt.grid(color='gray', linestyle='--', linewidth=0.5)
+    plt.legend()
+    plt.show()
 
 
 def main():
