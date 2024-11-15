@@ -1,7 +1,4 @@
 from typing import Callable
-
-import numpy as np
-
 from src.point import Point
 from src.approximation import build_polynomial
 
@@ -14,10 +11,11 @@ def test_func(x: float, y: float):
     return y * (x - 1) - (2 - 0.5 * x) * x
 
 
-def euler(func: Callable, x0: float, y0: float, h: float, rng: tuple[float, float]):
+def euler(func: Callable, y0: float, h: float, rng: tuple[float, float]):
     points: list[Point] = []
-    x, y = x0, y0
-    for _ in np.arange(x0, rng[1] + h, h):
+    number_of_points = int((rng[1] - rng[0]) / h)
+    x, y = rng[0], y0
+    for _ in range(number_of_points + 1):
         points.append(Point(x, y))
         x, y = x + h, y + h * func(x, y)
 
@@ -25,7 +23,7 @@ def euler(func: Callable, x0: float, y0: float, h: float, rng: tuple[float, floa
 
 
 def main():
-    print(euler(test_func, 0, 1, 0.05, (0, 2)))
+    print(euler(test_func, 1, 0.05, (0, 2)))
 
 
 if __name__ == '__main__':
