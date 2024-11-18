@@ -4,7 +4,7 @@ from src.approximation import build_polynomial
 
 
 def f(x: float, y: float) -> float:
-    return 0.2 * x ** 2 + 0.3 * (x ** 3 + 0.5 + y)
+    return 0.2 * x ** 2 + 0.3 * (x ** 3 + y)
 
 
 def test_func(x: float, y: float):
@@ -38,8 +38,8 @@ def runge_kutta(func: Callable, y0: float, h: float, rng: tuple[float, float]):
 
 
 def main():
-    print(euler(test_func, 1, 0.05, (0, 2)))
-    print(runge_kutta(test_func, 1, 0.05, (0, 2)))
+    print(euler(f, 0, 0.05, (0, 2)))
+    print(runge_kutta(f, 0, 0.05, (0, 2)))
 
 
 if __name__ == '__main__':
