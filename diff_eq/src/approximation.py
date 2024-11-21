@@ -4,7 +4,7 @@ import sympy as sp
 from point import Point
 
 
-def build_polynomial(points: list[Point], degree: int = 1):
+def build_polynomial(points: list[Point], *, degree: int = 1):
     if not 1 <= degree <= 10:
         raise ValueError('Polynomial degree must be >= 1 and <= 10')
 

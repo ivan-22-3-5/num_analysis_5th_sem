@@ -3,7 +3,7 @@ from src.point import Point
 from src.approximation import build_polynomial
 
 
-def f(x: float, y: float) -> float:
+def f_prime(x: float, y: float) -> float:
     return 0.2 * x ** 2 + 0.3 * (x ** 3 + y)
 
 
@@ -19,7 +19,7 @@ def euler(func: Callable, y0: float, h: float, rng: tuple[float, float]):
         points.append(Point(x, y))
         x, y = x + h, y + h * func(x, y)
 
-    return build_polynomial(points, 3)
+    return build_polynomial(points, degree=3)
 
 
 def runge_kutta(func: Callable, y0: float, h: float, rng: tuple[float, float]):
@@ -34,12 +34,12 @@ def runge_kutta(func: Callable, y0: float, h: float, rng: tuple[float, float]):
         k4 = func(x + h, y + k3 * h)
         x, y = x + h, y + h/6 * (k1 + 2 * k2 + 2 * k3 + k4)
 
-    return build_polynomial(points, 3)
+    return build_polynomial(points, degree=3)
 
 
 def main():
-    print(euler(f, 0, 0.05, (0, 2)))
-    print(runge_kutta(f, 0, 0.05, (0, 2)))
+    print(f"{euler(f_prime, 0, 0.05, (0, 2)) = }")
+    print(f"{runge_kutta(f_prime, 0, 0.05, (0, 2)) = }")
 
 
 if __name__ == '__main__':
