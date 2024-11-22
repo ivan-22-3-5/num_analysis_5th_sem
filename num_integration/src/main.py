@@ -2,6 +2,8 @@ from typing import Callable
 
 
 def simpson_integration(func: Callable[[float], float], a: float, b: float, n: int) -> float:
+    if n % 2 != 0:
+        n += 1
     h = (b - a) / n
     integral = func(a) + func(b)
     for i in range(1, int(n / 2)):
